@@ -20,9 +20,12 @@
 
 apply plugin: 'com.android.library'
 
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.tdlib-ktx.td'
+
 android {
     compileSdkVersion 29
-    buildToolsVersion "24.0.3"
+    buildToolsVersion "28.0.3"
 
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs'
