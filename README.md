@@ -4,7 +4,7 @@
 
 This is a library fetched from the original [TdLib](https://github.com/tdlib/td) for publishing it in Jitpack. 
 
-TDLib for Android is available in a prebuilt form and can be downloaded from [there](https://core.telegram.org/tdlib/tdlib.zip).
+TDLib can be build following [instruction](https://github.com/tdlib/td/tree/master/example/android).
 
 ## How to
 To get the library into your build:
@@ -25,6 +25,6 @@ allprojects {
 ### Step 2. Add the dependency
 ```Gradle
 dependencies {
-  implementation 'com.github.tdlibx:td:1.6.0'
+  implementation 'com.github.tdlibx:td:1.8.6'
 }
 ```
