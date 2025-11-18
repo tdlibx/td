@@ -1,31 +1,13 @@
-/*
- * This file is part of TD.
- *
- * TD is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * TD is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with TD.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Copyright 2014-2015 Arseny Smirnov
- *           2014-2015 Aliaksei Levin
- */
-
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.tdlib-ktx.td'
+group = 'com.tdlib-ktx.td'
+version = '1.8.6'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 36
+    buildToolsVersion "36.0.0"
+    namespace "org.drinkless.tdlib"
 
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs'
@@ -34,9 +16,9 @@ android {
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 36
+        versionCode 186
+        versionName "1.8.6"
     }
     buildTypes {
         release {
@@ -49,8 +31,29 @@ android {
         // use this line to check all rules except those listed
         disable 'InvalidPackage'
     }
+
+    publishing {
+        singleVariant("release") {
+            // if you don't want sources/javadoc, remove these lines
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = project.group
+                artifactId = 'tdlib'
+                version = project.version
+            }
+        }
+    }
 }
 
 dependencies {
-    api 'androidx.annotation:annotation:1.1.0'
+    api 'androidx.annotation:annotation:1.9.1'
 }
