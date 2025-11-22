@@ -25,6 +25,6 @@ allprojects {
 ### Step 2. Add the dependency
 ```Gradle
 dependencies {
-  implementation 'com.github.tdlibx:td:1.8.6'
+  implementation 'com.github.tdlibx:td:1.8.56'
 }
 ```
