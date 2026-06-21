@@ -94,7 +94,7 @@ class TdKtxClientTest {
             assertTrue(results[i].contains("result_$i"), "Result should match the injected response")
         }
 
-        client.close()
+        client.release()
     }
 
     @Test
@@ -131,7 +131,7 @@ class TdKtxClientTest {
         assertEquals(simulatedUpdate2, updatesReceived[1])
 
         collectJob.cancel()
-        client.close()
+        client.release()
     }
 
     @Test
@@ -196,6 +196,6 @@ class TdKtxClientTest {
 
         assertEquals(0, client.callbacks.size, "Callbacks should be cleaned up immediately on cancellation")
 
-        client.close()
+        client.release()
     }
 }

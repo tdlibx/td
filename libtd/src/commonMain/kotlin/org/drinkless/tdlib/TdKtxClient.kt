@@ -97,7 +97,7 @@ class TdKtxClient(
         }
     }
 
-    fun close() {
+    fun release() {
         scope.cancel()
     }
 }

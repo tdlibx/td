@@ -6,7 +6,11 @@ interface TdEngine {
     fun receive(clientId: Long, timeout: Double): String?
 }
 
-expect class PlatformTdClientEngine() : TdEngine
+expect class PlatformTdClientEngine() : TdEngine {
+    override fun createClient(): Long
+    override fun send(clientId: Long, jsonQuery: String)
+    override fun receive(clientId: Long, timeout: Double): String?
+}
 
 class TdClientEngine(private val delegate: TdEngine = PlatformTdClientEngine()) : TdEngine {
     override fun createClient(): Long = delegate.createClient()

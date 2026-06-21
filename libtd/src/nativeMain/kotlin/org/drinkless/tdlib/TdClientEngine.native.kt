@@ -15,18 +15,18 @@ import clib.tdjson.td_json_client_send
 @OptIn(ExperimentalForeignApi::class)
 actual class PlatformTdClientEngine actual constructor() : TdEngine {
 
-    override fun createClient(): Long {
+    actual override fun createClient(): Long {
         val ptr: COpaquePointer? = td_json_client_create()
         return ptr.toLong()
     }
 
-    override fun send(clientId: Long, jsonQuery: String) {
+    actual override fun send(clientId: Long, jsonQuery: String) {
         if (clientId == 0L) return
         val ptr: COpaquePointer? = clientId.toCPointer<CPointed>()
         td_json_client_send(ptr, jsonQuery)
     }
 
-    override fun receive(clientId: Long, timeout: Double): String? {
+    actual override fun receive(clientId: Long, timeout: Double): String? {
         if (clientId == 0L) return null
         val ptr: COpaquePointer? = clientId.toCPointer<CPointed>()
         val responsePtr: CPointer<ByteVar>? = td_json_client_receive(ptr, timeout)

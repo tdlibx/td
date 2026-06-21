@@ -10,15 +10,15 @@ actual class PlatformTdClientEngine actual constructor() : TdEngine {
         }
     }
 
-    override fun createClient(): Long {
+    actual override fun createClient(): Long {
         return JsonClient.create()
     }
 
-    override fun send(clientId: Long, jsonQuery: String) {
+    actual override fun send(clientId: Long, jsonQuery: String) {
         JsonClient.send(clientId, jsonQuery)
     }
 
-    override fun receive(clientId: Long, timeout: Double): String? {
+    actual override fun receive(clientId: Long, timeout: Double): String? {
         return JsonClient.receive(clientId, timeout)
     }
 }

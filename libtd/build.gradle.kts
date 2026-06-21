@@ -2,12 +2,14 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("maven-publish")
+    kotlin("plugin.serialization")
 }
 
 group = "com.github.tdlibx"
 version = "1.8.6"
 
 kotlin {
+
     androidTarget {
         publishLibraryVariants("release")
         compilerOptions {
@@ -26,6 +28,7 @@ kotlin {
             dependencies {
                 implementation(project(":td-kmp-core"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+                implementation(libs.kotlinx.serialization.json)
             }
         }
         
