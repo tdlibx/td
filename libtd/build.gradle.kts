@@ -19,27 +19,17 @@ kotlin {
     iosSimulatorArm64()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":td-kmp-core"))
             }
         }
         
-        val androidMain by getting {
-            dependsOn(commonMain)
+        androidMain {
             dependencies {
                 api("androidx.annotation:annotation:1.9.1")
             }
         }
-        
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        
-        val macosX64Main by getting { dependsOn(nativeMain) }
-        val macosArm64Main by getting { dependsOn(nativeMain) }
-        val iosArm64Main by getting { dependsOn(nativeMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(nativeMain) }
     }
 }
 
@@ -59,7 +49,6 @@ android {
 
     defaultConfig {
         minSdk = 10
-        // targetSdk is not strictly required for libraries
     }
 
     buildTypes {
@@ -81,8 +70,6 @@ android {
     }
 }
 
-// Ensure the artifactId remains 'td' for the primary publication if needed.
-// Note: KMP publishing handles multiple targets; this primarily affects the metadata/android publication.
 publishing {
     publications {
         withType<MavenPublication> {

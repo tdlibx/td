@@ -8,21 +8,35 @@ version = "1.8.6"
 
 kotlin {
     androidTarget()
+    
     macosX64()
     macosArm64()
     iosArm64()
     iosSimulatorArm64()
 
     sourceSets {
-        val commonMain by getting
-        val androidMain by getting
-        val nativeMain by creating {
-            dependsOn(commonMain)
+        commonMain
+        androidMain
+    }
+
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        compilations.getByName("main") {
+            val tdjson by cinterops.creating {
+                definitionFile.set(project.file("src/nativeInterop/cinterop/tdjson.def"))
+                includeDirs {
+                    allHeaders(project.file("native_libs/include"))
+                }
+            }
         }
-        val macosX64Main by getting { dependsOn(nativeMain) }
-        val macosArm64Main by getting { dependsOn(nativeMain) }
-        val iosArm64Main by getting { dependsOn(nativeMain) }
-        val iosSimulatorArm64Main by getting { dependsOn(nativeMain) }
+        
+        binaries.all {
+            val libDir = when {
+                target.name.contains("Simulator") -> "ios-simulator"
+                target.name.startsWith("ios") -> "ios"
+                else -> "macos"
+            }
+            linkerOpts("-L${project.file("native_libs/$libDir").absolutePath}", "-ltdjson")
+        }
     }
 }
 

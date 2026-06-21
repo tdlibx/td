@@ -1,0 +1,14 @@
+abi_version=2.2.0
+builtins_platform=NATIVE
+commonizer_native_targets=macos_arm64 macos_x64
+commonizer_target=(macos_arm64, macos_x64)
+compiler_version=2.2.0
+depends=stdlib
+exportForwardDeclarations=
+includedForwardDeclarations=
+interop=true
+ir_signature_versions=1,2
+metadata_version=1.4.1
+native_targets=macos_arm64 macos_x64
+package=clib.tdjson
+unique_name=com.github.tdlibx\:td-kmp-core-cinterop-tdjson
