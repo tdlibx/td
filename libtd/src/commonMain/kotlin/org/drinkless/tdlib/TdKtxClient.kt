@@ -22,8 +22,9 @@ open class TdKtxClient(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val _updates = MutableSharedFlow<String>(extraBufferCapacity = 64)
+    private val _updates = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 64)
     val updates: SharedFlow<String> = _updates.asSharedFlow()
+
 
     private val pendingRequests = Mutex()
     internal val callbacks = HashMap<String, CompletableDeferred<String>>()

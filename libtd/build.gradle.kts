@@ -44,6 +44,15 @@ kotlin {
                 api("androidx.annotation:annotation:1.9.1")
             }
         }
+
+        // Instrumented integration tests (run on device/emulator)
+        val androidInstrumentedTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.androidx.test.ext.junit)
+                implementation(libs.androidx.test.espresso.core)
+            }
+        }
     }
 }
 
@@ -53,6 +62,7 @@ android {
 
     compileSdk = 36
     namespace = "org.drinkless.tdlib"
+
     
     sourceSets {
         getByName("main") {
@@ -60,10 +70,37 @@ android {
             java.srcDirs("src/androidMain/kotlin")
             res.srcDirs("src/androidMain/res")
         }
+        getByName("androidTest") {
+            java.srcDirs("src/androidInstrumentedTest/kotlin")
+            manifest.srcFile("src/androidInstrumentedTest/AndroidManifest.xml")
+        }
+    }
+
+    ndkVersion = "30.0.14904198"
+
+    externalNativeBuild {
+        cmake {
+            path = file("CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
 
     defaultConfig {
-        minSdk = 10
+        minSdk = 21
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                arguments("-DANDROID_STL=c++_shared")
+                abiFilters("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("debug") {
+            // Allow instrumented tests to run on API 21+
+            // (test dependencies like androidx.test.ext:junit require minSdk 21)
+        }
     }
 
     compileOptions {

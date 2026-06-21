@@ -2,14 +2,6 @@ package org.drinkless.tdlib
 
 actual class PlatformTdClientEngine actual constructor() : TdEngine {
 
-    init {
-        try {
-            System.loadLibrary("tdjson")
-        } catch (e: UnsatisfiedLinkError) {
-            e.printStackTrace()
-        }
-    }
-
     actual override fun createClient(): Long {
         return JsonClient.create()
     }

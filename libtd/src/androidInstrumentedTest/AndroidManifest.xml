@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        Override the minSdk for instrumented tests.
+        The library itself supports minSdk 10, but test dependencies (androidx.test.ext.junit)
+        require at least API 21. Tests should only be run on API 21+ devices.
+    -->
+    <uses-sdk
+        android:minSdkVersion="21"
+        tools:overrideLibrary="androidx.test.ext.junit,androidx.test.runner,androidx.test.espresso.core" />
+</manifest>
