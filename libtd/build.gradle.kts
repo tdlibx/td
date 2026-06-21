@@ -10,6 +10,9 @@ version = "1.8.6"
 kotlin {
     androidTarget {
         publishLibraryVariants("release")
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
     
     macosX64()
@@ -22,6 +25,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":td-kmp-core"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
             }
         }
         

@@ -7,7 +7,11 @@ group = "com.github.tdlibx"
 version = "1.8.6"
 
 kotlin {
-    androidTarget()
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
     
     macosX64()
     macosArm64()
