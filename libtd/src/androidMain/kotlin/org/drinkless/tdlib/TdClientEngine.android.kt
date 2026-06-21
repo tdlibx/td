@@ -1,6 +1,6 @@
 package org.drinkless.tdlib
 
-actual class TdClientEngine actual constructor() {
+actual class PlatformTdClientEngine actual constructor() : TdEngine {
 
     init {
         try {
@@ -10,15 +10,15 @@ actual class TdClientEngine actual constructor() {
         }
     }
 
-    actual fun createClient(): Long {
+    override fun createClient(): Long {
         return JsonClient.create()
     }
 
-    actual fun send(clientId: Long, jsonQuery: String) {
+    override fun send(clientId: Long, jsonQuery: String) {
         JsonClient.send(clientId, jsonQuery)
     }
 
-    actual fun receive(clientId: Long, timeout: Double): String? {
+    override fun receive(clientId: Long, timeout: Double): String? {
         return JsonClient.receive(clientId, timeout)
     }
 }

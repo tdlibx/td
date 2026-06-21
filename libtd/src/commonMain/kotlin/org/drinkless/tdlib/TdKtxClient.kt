@@ -15,9 +15,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class TdKtxClient(
-    private val timeout: Double = 1.0
+    private val timeout: Double = 1.0,
+    private val engine: TdEngine = TdClientEngine()
 ) {
-    private val engine = TdClientEngine()
     private val clientId = engine.createClient()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -26,7 +26,7 @@ class TdKtxClient(
     val updates: SharedFlow<String> = _updates.asSharedFlow()
 
     private val pendingRequests = Mutex()
-    private val callbacks = HashMap<String, CompletableDeferred<String>>()
+    internal val callbacks = HashMap<String, CompletableDeferred<String>>()
 
     private val counterMutex = Mutex()
     private var counter = 0L
