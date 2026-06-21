@@ -1,11 +1,24 @@
 package org.drinkless.tdlib
 
 actual class TdClientEngine actual constructor() {
-    actual fun createClient(): Long = JsonClient.create()
+
+    init {
+        try {
+            System.loadLibrary("tdjson")
+        } catch (e: UnsatisfiedLinkError) {
+            e.printStackTrace()
+        }
+    }
+
+    actual fun createClient(): Long {
+        return JsonClient.create()
+    }
 
     actual fun send(clientId: Long, jsonQuery: String) {
         JsonClient.send(clientId, jsonQuery)
     }
 
-    actual fun receive(clientId: Long, timeout: Double): String? = JsonClient.receive(clientId, timeout)
+    actual fun receive(clientId: Long, timeout: Double): String? {
+        return JsonClient.receive(clientId, timeout)
+    }
 }

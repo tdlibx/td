@@ -43,12 +43,16 @@ android {
             java.srcDirs("src/androidMain/kotlin")
             res.srcDirs("src/androidMain/res")
             jniLibs.srcDir("src/androidMain/jniLibs")
-            jni.srcDirs() // disable automatic ndk-build call
         }
     }
 
     defaultConfig {
         minSdk = 10
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {
