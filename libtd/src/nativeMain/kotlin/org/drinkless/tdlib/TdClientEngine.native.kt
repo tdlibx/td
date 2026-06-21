@@ -1,7 +1,16 @@
 package org.drinkless.tdlib
 
-import kotlinx.cinterop.*
-import clib.tdjson.*
+import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.CPointed
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.toCPointer
+import kotlinx.cinterop.toKString
+import kotlinx.cinterop.toLong
+import clib.tdjson.td_json_client_create
+import clib.tdjson.td_json_client_receive
+import clib.tdjson.td_json_client_send
 
 @OptIn(ExperimentalForeignApi::class)
 actual class TdClientEngine actual constructor() {
