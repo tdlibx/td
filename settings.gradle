@@ -1,2 +1,3 @@
 include ':libtd'
+include ':td-kmp-core'
 rootProject.name='td'
