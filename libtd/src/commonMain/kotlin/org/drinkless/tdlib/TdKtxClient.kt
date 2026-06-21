@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class TdKtxClient(
+open class TdKtxClient(
     private val timeout: Double = 1.0,
     private val engine: TdEngine = TdClientEngine()
 ) {

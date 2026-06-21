@@ -48,6 +48,9 @@ kotlin {
 }
 
 android {
+    // Include native TDLib JSON libraries from the td-kmp-core module
+    sourceSets["main"].jniLibs.srcDir("../td-kmp-core/src/androidMain/jniLibs")
+
     compileSdk = 36
     namespace = "org.drinkless.tdlib"
     
