@@ -6,11 +6,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -22,8 +21,32 @@ open class TdKtxClient(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val _updates = MutableSharedFlow<String>(replay = 1000, extraBufferCapacity = 6400)
-    val updates: SharedFlow<String> = _updates.asSharedFlow()
+    val updates = flow {
+        while (scope.isActive) {
+            try {
+                // Receive response from TDLib.
+                // Timeout is in seconds.
+                val response = engine.receive(clientId, timeout)
+                if (response != null) {
+                    emit(response)
+
+                    val extraId = extractExtra(response)
+                    if (extraId != null) {
+                        val deferred = pendingRequests.withLock {
+                            callbacks.remove(extraId)
+                        }
+                        deferred?.complete(response)
+                    }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                println("TD_FLOW_DEBUG: TdKtxClient error: ${e.message}")
+
+                // Continue loop in case of non-cancellation exceptions
+            }
+        }
+    }.shareIn(scope, SharingStarted.WhileSubscribed(5000), 1000)
 
 
     private val pendingRequests = Mutex()
@@ -33,35 +56,6 @@ open class TdKtxClient(
     private var counter = 0L
 
     private val extraRegex = """"@extra"\s*:\s*(?:"([^"]*)"|(\d+))""".toRegex()
-
-    init {
-        scope.launch {
-            while (true) {
-                try {
-                    // Receive response from TDLib.
-                    // Timeout is in seconds.
-                    val response = engine.receive(clientId, timeout)
-                    if (response != null) {
-                        _updates.emit(response)
-
-                        val extraId = extractExtra(response)
-                        if (extraId != null) {
-                            val deferred = pendingRequests.withLock {
-                                callbacks.remove(extraId)
-                            }
-                            deferred?.complete(response)
-                        }
-                    }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    println("TD_FLOW_DEBUG: TdKtxClient error: ${e.message}")
-
-                    // Continue loop in case of non-cancellation exceptions
-                }
-            }
-        }
-    }
 
     private fun extractExtra(json: String): String? {
         val match = extraRegex.find(json) ?: return null
