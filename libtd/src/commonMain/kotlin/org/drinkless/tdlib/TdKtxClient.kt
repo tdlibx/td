@@ -22,7 +22,7 @@ open class TdKtxClient(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val _updates = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 64)
+    private val _updates = MutableSharedFlow<String>(replay = 1000, extraBufferCapacity = 6400)
     val updates: SharedFlow<String> = _updates.asSharedFlow()
 
 
@@ -36,7 +36,7 @@ open class TdKtxClient(
 
     init {
         scope.launch {
-            while (isActive) {
+            while (true) {
                 try {
                     // Receive response from TDLib.
                     // Timeout is in seconds.
@@ -55,6 +55,8 @@ open class TdKtxClient(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
+                    println("TD_FLOW_DEBUG: TdKtxClient error: ${e.message}")
+
                     // Continue loop in case of non-cancellation exceptions
                 }
             }

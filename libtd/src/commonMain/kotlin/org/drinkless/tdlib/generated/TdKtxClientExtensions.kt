@@ -50,7 +50,9 @@ suspend fun TdKtxClient.setTdlibParameters(
 ): Ok {
     val request = SetTdlibParameters(useTestDc, databaseDirectory, filesDirectory, databaseEncryptionKey, useFileDatabase, useChatInfoDatabase, useMessageDatabase, useSecretChats, apiId, apiHash, systemLanguageCode, deviceModel, systemVersion, applicationVersion)
     val requestJson = tdJson.encodeToString(SetTdlibParameters.serializer(), request)
+    println("TD_FLOW_DEBUG -> $requestJson")
     val responseJson = this.sendJson(requestJson)
+    println("TD_FLOW_DEBUG -> $responseJson")
     return tdJson.decodeFromString(Ok.serializer(), responseJson)
 }
 
