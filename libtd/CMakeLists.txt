@@ -4,11 +4,11 @@ project(tdjson_jni)
 # CMakeLists.txt lives in td-core-src/libtd/
 # Paths below are relative to this file's location.
 
-# TDLib headers from the sibling td-kmp-core module
-set(TDJSON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../td-kmp-core/native_libs/include")
+# TDLib headers
+set(TDJSON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/native_libs/include")
 
 # Prebuilt libtdjson.so for the current ABI
-set(TDJSON_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../td-kmp-core/src/androidMain/jniLibs/${ANDROID_ABI}")
+set(TDJSON_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/androidMain/jniLibs/${ANDROID_ABI}")
 
 # Import libtdjson.so as a prebuilt shared library
 add_library(tdjson SHARED IMPORTED)

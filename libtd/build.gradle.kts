@@ -1,12 +1,11 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("maven-publish")
-    kotlin("plugin.serialization")
+    id("com.vanniktech.maven.publish")
 }
 
-group = "com.github.tdlibx"
-version = "1.8.6"
+group = "io.github.tdlibx"
+version = "1.8.56-RC4"
 
 kotlin {
 
@@ -23,19 +22,36 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        compilations.getByName("main") {
+            val tdjson by cinterops.creating {
+                definitionFile.set(project.file("src/nativeInterop/cinterop/tdjson.def"))
+                includeDirs {
+                    allHeaders(project.file("native_libs/include"))
+                }
+            }
+        }
+
+        binaries.all {
+            val libDir = when {
+                target.name.contains("Simulator") -> "ios-simulator"
+                target.name.startsWith("ios") -> "ios"
+                else -> "macos"
+            }
+            linkerOpts("-L${project.file("native_libs/$libDir").absolutePath}", "-ltdjson")
+        }
+    }
+
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":td-kmp-core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-                implementation(libs.kotlinx.serialization.json)
+                // Thin core has no mandatory dependencies
             }
         }
         
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
             }
         }
         
@@ -57,8 +73,8 @@ kotlin {
 }
 
 android {
-    // Include native TDLib JSON libraries from the td-kmp-core module
-    sourceSets["main"].jniLibs.srcDir("../td-kmp-core/src/androidMain/jniLibs")
+    // Include native TDLib JSON libraries
+    sourceSets["main"].jniLibs.srcDir("src/androidMain/jniLibs")
 
     compileSdk = 36
     namespace = "org.drinkless.tdlib"
@@ -98,8 +114,6 @@ android {
 
     buildTypes {
         getByName("debug") {
-            // Allow instrumented tests to run on API 21+
-            // (test dependencies like androidx.test.ext:junit require minSdk 21)
         }
     }
 
@@ -127,10 +141,36 @@ android {
     }
 }
 
-publishing {
-    publications {
-        withType<MavenPublication> {
-            artifactId = "td" + (if (name == "kotlinMultiplatform") "" else "-$name")
+mavenPublishing {
+    coordinates("io.github.tdlibx", "td", "1.8.56-RC4")
+
+    pom {
+        name.set("td")
+        description.set("Telegram TDLib for Kotlin Multiplatform")
+        inceptionYear.set("2026")
+        url.set("https://github.com/tdlibx/td")
+        licenses {
+            license {
+                name.set("The Apache Software License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set("tdlibx")
+                name.set("tdlibx Contributors")
+            }
+        }
+        scm {
+            url.set("https://github.com/tdlibx/td")
+            connection.set("scm:git:git://github.com/tdlibx/td.git")
+            developerConnection.set("scm:git:ssh://git@github.com/tdlibx/td.git")
         }
     }
+
+    // Configure targeting the modern Sonatype Central Portal
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+
+    // Sign all generated multiplatform target publications
+    signAllPublications()
 }
