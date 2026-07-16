@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.tdlibx"
-version = "1.8.56-RC4"
+version = "1.8.56-RC5"
 
 kotlin {
 
@@ -16,9 +16,12 @@ kotlin {
         }
     }
     
+    jvm() // For Desktop (JVM)
+    
     macosX64()
     macosArm64()
     
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -34,7 +37,7 @@ kotlin {
 
         binaries.all {
             val libDir = when {
-                target.name.contains("Simulator") -> "ios-simulator"
+                target.name.contains("Simulator") || target.name.endsWith("X64") && target.name.startsWith("ios") -> "ios-simulator"
                 target.name.startsWith("ios") -> "ios"
                 else -> "macos"
             }
@@ -48,16 +51,16 @@ kotlin {
                 // Thin core has no mandatory dependencies
             }
         }
+
+        val androidMain by getting {
+            dependencies {
+                api("androidx.annotation:annotation:1.9.1")
+            }
+        }
         
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-            }
-        }
-        
-        androidMain {
-            dependencies {
-                api("androidx.annotation:annotation:1.9.1")
             }
         }
 
@@ -142,7 +145,7 @@ android {
 }
 
 mavenPublishing {
-    coordinates("io.github.tdlibx", "td", "1.8.56-RC4")
+    coordinates("io.github.tdlibx", "td", "1.8.56-RC5")
 
     pom {
         name.set("td")

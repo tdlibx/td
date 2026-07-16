@@ -20,6 +20,6 @@ allprojects {
 
 ```Gradle
 dependencies {
-  implementation "io.github.tdlibx:td:1.8.56-RC4"
+  implementation "io.github.tdlibx:td:1.8.56-RC5"
 }
 ```
