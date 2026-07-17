@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.tdlibx"
-version = "1.8.56-RC5"
+version = "1.8.56-RC6"
 
 kotlin {
 
@@ -21,7 +21,6 @@ kotlin {
     macosX64()
     macosArm64()
     
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -56,6 +55,30 @@ kotlin {
             dependencies {
                 api("androidx.annotation:annotation:1.9.1")
             }
+        }
+        
+        // Native targets (iOS, macOS) depend on the published xcframework
+        // containing prebuilt libtdjson.dylib. Consumers using the
+        // io.github.tdlibx.tdlib-xcframework Gradle plugin will have the
+        // binary automatically linked; for local development the
+        // libtdjson dylibs at native_libs/{ios,ios-simulator,macos}/
+        // must be present (see AGENTS.md).
+        //
+        // We declare the dep on each native target's intermediate source set
+        // to ensure it appears in the klib metadata for iOS/macOS publications
+        // but NOT in the Android or JVM POMs (where the xcframework zip is
+        // useless and would just add download weight).
+        val iosArm64Main by getting {
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+        }
+        val iosSimulatorArm64Main by getting {
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+        }
+        val macosArm64Main by getting {
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+        }
+        val macosX64Main by getting {
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
         }
         
         commonTest {
@@ -145,7 +168,7 @@ android {
 }
 
 mavenPublishing {
-    coordinates("io.github.tdlibx", "td", "1.8.56-RC5")
+    coordinates("io.github.tdlibx", "td", "1.8.56-RC6")
 
     pom {
         name.set("td")
