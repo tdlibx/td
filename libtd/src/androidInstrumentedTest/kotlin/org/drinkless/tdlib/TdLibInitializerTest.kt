@@ -1,8 +1,6 @@
 package org.drinkless.tdlib
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -23,7 +21,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class TdLibInitializerTest {
-
     @Test
     fun testNativeLibraryLoadsSuccessfully() {
         val result = TdLibInitializer.init()
@@ -36,15 +33,15 @@ class TdLibInitializerTest {
             is TdLibInitResult.Error -> {
                 fail(
                     "TDLib native library failed to load.\n\n" +
-                    "Cause: ${result.message}\n\n" +
-                    "Most likely reasons:\n" +
-                    "  1. libtdjson_jni.so (JNI bridge) is not compiled.\n" +
-                    "     Fix: Install Android NDK in SDK Manager, then run:\n" +
-                    "          ./gradlew :libtd:buildCMakeDebug\n" +
-                    "  2. libtdjson.so is not packaged in the APK for this ABI.\n" +
-                    "     Fix: Check jniLibs directory in td-kmp-core.\n" +
-                    "  3. The .so was compiled for a different ABI than the test device.\n" +
-                    "     Fix: Verify ABI filters in build.gradle."
+                        "Cause: ${result.message}\n\n" +
+                        "Most likely reasons:\n" +
+                        "  1. libtdjson_jni.so (JNI bridge) is not compiled.\n" +
+                        "     Fix: Install Android NDK in SDK Manager, then run:\n" +
+                        "          ./gradlew :libtd:buildCMakeDebug\n" +
+                        "  2. libtdjson.so is not packaged in the APK for this ABI.\n" +
+                        "     Fix: Check jniLibs directory in td-kmp-core.\n" +
+                        "  3. The .so was compiled for a different ABI than the test device.\n" +
+                        "     Fix: Verify ABI filters in build.gradle.",
                 )
             }
         }
@@ -75,15 +72,16 @@ class TdLibInitializerTest {
         }
 
         // getOption is documented as synchronously executable
-        val response = JsonClient.execute(
-            0L,
-            """{"@type":"getOption","name":"version"}"""
-        )
+        val response =
+            JsonClient.execute(
+                0L,
+                """{"@type":"getOption","name":"version"}""",
+            )
 
         assertNotNull("execute(getOption) must return a non-null response", response)
         assertTrue(
             "Response must contain TDLib version",
-            response!!.contains("\"@type\"")
+            response!!.contains("\"@type\""),
         )
         println("TDLib version response: $response")
     }

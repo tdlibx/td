@@ -22,13 +22,22 @@ object JsonClient {
     external fun create(): Long
 
     @JvmStatic
-    external fun send(clientId: Long, request: String)
+    external fun send(
+        clientId: Long,
+        request: String,
+    )
 
     @JvmStatic
-    external fun receive(clientId: Long, timeout: Double): String?
+    external fun receive(
+        clientId: Long,
+        timeout: Double,
+    ): String?
 
     @JvmStatic
-    external fun execute(clientId: Long, request: String): String?
+    external fun execute(
+        clientId: Long,
+        request: String,
+    ): String?
 
     @JvmStatic
     external fun destroy(clientId: Long)

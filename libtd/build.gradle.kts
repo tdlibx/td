@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.tdlibx"
-version = "1.8.56-RC6"
+version = "1.8.56-RC10"
 
 kotlin {
 
@@ -15,14 +15,15 @@ kotlin {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
-    
+
     jvm() // For Desktop (JVM)
-    
+
     macosX64()
     macosArm64()
-    
+
     iosArm64()
     iosSimulatorArm64()
+    iosX64()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.getByName("main") {
@@ -35,11 +36,12 @@ kotlin {
         }
 
         binaries.all {
-            val libDir = when {
-                target.name.contains("Simulator") || target.name.endsWith("X64") && target.name.startsWith("ios") -> "ios-simulator"
-                target.name.startsWith("ios") -> "ios"
-                else -> "macos"
-            }
+            val libDir =
+                when {
+                    target.name.contains("Simulator") || target.name.endsWith("X64") && target.name.startsWith("ios") -> "ios-simulator"
+                    target.name.startsWith("ios") -> "ios"
+                    else -> "macos"
+                }
             linkerOpts("-L${project.file("native_libs/$libDir").absolutePath}", "-ltdjson")
         }
     }
@@ -56,7 +58,7 @@ kotlin {
                 api("androidx.annotation:annotation:1.9.1")
             }
         }
-        
+
         // Native targets (iOS, macOS) depend on the published xcframework
         // containing prebuilt libtdjson.dylib. Consumers using the
         // io.github.tdlibx.tdlib-xcframework Gradle plugin will have the
@@ -69,18 +71,21 @@ kotlin {
         // but NOT in the Android or JVM POMs (where the xcframework zip is
         // useless and would just add download weight).
         val iosArm64Main by getting {
-            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC10") }
         }
         val iosSimulatorArm64Main by getting {
-            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC10") }
+        }
+        val iosX64Main by getting {
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC10") }
         }
         val macosArm64Main by getting {
-            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC10") }
         }
         val macosX64Main by getting {
-            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC6") }
+            dependencies { implementation("io.github.tdlibx:td-libtdjson:1.8.56-RC10") }
         }
-        
+
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
@@ -105,7 +110,6 @@ android {
     compileSdk = 36
     namespace = "org.drinkless.tdlib"
 
-    
     sourceSets {
         getByName("main") {
             manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -168,7 +172,7 @@ android {
 }
 
 mavenPublishing {
-    coordinates("io.github.tdlibx", "td", "1.8.56-RC6")
+    coordinates("io.github.tdlibx", "td", "1.8.56-RC10")
 
     pom {
         name.set("td")
@@ -195,7 +199,7 @@ mavenPublishing {
     }
 
     // Configure targeting the modern Sonatype Central Portal
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    publishToMavenCentral()
 
     // Sign all generated multiplatform target publications
     signAllPublications()
